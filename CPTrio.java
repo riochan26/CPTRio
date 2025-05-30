@@ -60,6 +60,57 @@ public class CPTrio{
 		}
 		intHand = sortHand(intHand);
 		
+		int intCardValue[];
+		intCardValue = new int[5];
+		int intSuitValue[];
+		intSuitValue = new int[5];
+		int intCardCount[];
+		intCardCount = new int[13];
+		
+		int intPairs = 0;
+		boolean blnThreeKind = false;
+		boolean blnFourKind = false;
+		boolean blnJacksUp = false;
+		boolean blnFullHouse = false;
+		boolean blnStraight = false;
+		boolean blnFlush = false;
+		boolean blnStrFlush = false;
+		boolean blnRoyalFlush = false;
+		
+		for(intCount = 0; intCount < 5; intCount++){
+			intCardValue[intCount] = intHand[intCount][0];
+			intSuitValue[intCount] = intHand[intCount][1];
+			intCardCount[intCardValue[intCount]-1]++;
+		}
+		
+		for(intCount = 0; intCount < 13; intCount++){
+			if (intCardCount[intCount] == 2){
+				intPairs++;
+				con.println("found pair");
+			}else if (intCardCount[intCount] == 3){
+				blnThreeKind = true;
+				con.println("found 3k");
+			}else if (intCardCount[intCount] == 4){
+				blnFourKind = true;
+				con.println("found 4k");
+			}
+		}
+		
+		if (intPairs == 1){
+			if(blnThreeKind == true){
+				blnFullHouse = true;
+				con.println("is full");
+			}else if(intCardCount[0] == 2 || intCardCount[10] == 2 || intCardCount[11] == 2 || intCardCount[12] == 2){
+				blnJacksUp = true;
+				con.println("is jacks up");
+			}else{
+				continue;
+			}
+		}
+		
+		if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1) || (intCardValue[0] == 1 && intCardValue[1] == ))
+		
+		
 		if(intHand[0][1] == intHand[1][1] && intHand[0][1] == intHand[2][1] && intHand[0][1] == intHand[3][1] && intHand[0][1] == intHand[4][1]){
 			con.println("flush");
 			int intSuit;
