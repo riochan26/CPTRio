@@ -6,7 +6,7 @@ public class CPTrio{
 		int intMoney;
 		String strName;
 		int intCards[][];
-		intCards = loadDeck();
+		
 		
 		int intHand[][];
 		intHand = new int[5][2];
@@ -16,125 +16,182 @@ public class CPTrio{
 		String strSwappedCards;
 		int intCount;
 		
+		int intBet;
+		int intMult;
+		int intWin;
+		
 		strSwappedCards = "";
-		
+		String strPlayAgain = "y";
 		//Sort the card deck here bubble sort
-		intCards = sort(intCards);
 		
-		for(intRow = 0; intRow < 5; intRow++){
-			intHand[intRow][0] = intCards[intRow][0];
-			intHand[intRow][1] = intCards[intRow][1];
-			con.println(intHand[intRow][0] + " " + intHand[intRow][1]);
+		
+		con.println("What is your name?");
+		strName = con.readLine();
+		
+		if (strName.equals("statitan")){
+			intMoney = 10000;
+		}else{
+			intMoney = 1000;
 		}
 		
-		con.println("How many cards would you like to swap");
-		intSwap = con.readInt();
-		
-		while(intSwap > 5 && intSwap < 0){
-			con.println("Invalid");
+		while(strPlayAgain.equalsIgnoreCase("y")){
+			intCards = loadDeck();
+			intCards = sort(intCards);
+			con.println("You have $" + intMoney);
+			con.println("How much do you bet?");
+			intBet = con.readInt();
+			intMult = 0;
+			intWin = 0;
+			
+			for(intRow = 0; intRow < 5; intRow++){
+				intHand[intRow][0] = intCards[intRow][0];
+				intHand[intRow][1] = intCards[intRow][1];
+				con.println(intHand[intRow][0] + " " + intHand[intRow][1]);
+			}
+			
 			con.println("How many cards would you like to swap");
 			intSwap = con.readInt();
-		}
-		
-		if (intSwap != 0){
-			con.println("Which cards would you like to swap (Example, 134 would swap cards 1, 3 and 4)");
-			strSwappedCards = con.readLine();
-			
-			while(strSwappedCards.length() != intSwap){
+			while(intSwap > 5 || intSwap < 0){
 				con.println("Invalid");
+				con.println("How many cards would you like to swap");
+				intSwap = con.readInt();
+			}
+			
+			if (intSwap != 0){
 				con.println("Which cards would you like to swap (Example, 134 would swap cards 1, 3 and 4)");
 				strSwappedCards = con.readLine();
-			}
-		}
-		for(intCount = 0; intCount < intSwap; intCount++){
-			intSwapped = Integer.parseInt(strSwappedCards.substring(intCount, intCount+1));
-			intRow++;
-			intHand[intSwapped-1][0] = intCards[intRow][0];
-			intHand[intSwapped-1][1] = intCards[intRow][1];
-		}
-		
-		for(intCount = 0; intCount < 5; intCount++){
-			con.print(intHand[intCount][0] + " ");
-			con.println(intHand[intCount][1]);
-			
-		}
-		intHand = sortHand(intHand);
-		
-		int intCardValue[];
-		intCardValue = new int[5];
-		int intSuitValue[];
-		intSuitValue = new int[5];
-		int intCardCount[];
-		intCardCount = new int[13];
-		
-		int intPairs = 0;
-		boolean blnThreeKind = false;
-		boolean blnFourKind = false;
-		boolean blnJacksUp = false;
-		boolean blnFullHouse = false;
-		boolean blnStraight = false;
-		boolean blnFlush = false;
-		boolean blnStrFlush = false;
-		boolean blnRoyalFlush = false;
-		
-		for(intCount = 0; intCount < 5; intCount++){
-			intCardValue[intCount] = intHand[intCount][0];
-			intSuitValue[intCount] = intHand[intCount][1];
-			intCardCount[intCardValue[intCount]-1]++;
-		}
-		
-		for(intCount = 0; intCount < 13; intCount++){
-			if (intCardCount[intCount] == 2){
-				intPairs++;
-				con.println("found pair");
-			}else if (intCardCount[intCount] == 3){
-				blnThreeKind = true;
-				con.println("found 3k");
-			}else if (intCardCount[intCount] == 4){
-				blnFourKind = true;
-				con.println("found 4k");
-			}
-		}
-		
-		if (intPairs == 1){
-			if(blnThreeKind == true){
-				blnFullHouse = true;
-				con.println("is full");
-			}else if(intCardCount[0] == 2 || intCardCount[10] == 2 || intCardCount[11] == 2 || intCardCount[12] == 2){
-				blnJacksUp = true;
-				con.println("is jacks up");
-			}else{
-				continue;
-			}
-		}
-		
-		if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1) || (intCardValue[0] == 1 && intCardValue[1] == ))
-		
-		
-		if(intHand[0][1] == intHand[1][1] && intHand[0][1] == intHand[2][1] && intHand[0][1] == intHand[3][1] && intHand[0][1] == intHand[4][1]){
-			con.println("flush");
-			int intSuit;
-			intSuit = intHand[0][1];
-			if((intHand[0][0] == (intHand[1][0]-1) && intHand[0][0] == (intHand[2][0]-2) && intHand[0][0] == (intHand[3][0]-3) && intHand[0][0] == (intHand[4][0]-4)) || (intHand[0][0] == 1 && intHand[1][0] == 10 && intHand[2][0] == 11 && intHand[3][0] == 12 && intHand[4][0] == 13)){
-				con.println("straight flush");
-				if (intSuit == 4 && intHand[0][0] == 1 && intHand[4][0] == 13){
-					con.println("royal flush");
+				
+				while(strSwappedCards.length() != intSwap){
+					con.println("Invalid");
+					con.println("Which cards would you like to swap (Example, 134 would swap cards 1, 3 and 4)");
+					strSwappedCards = con.readLine();
 				}
 			}
-		}
-		else if((intHand[0][0] == (intHand[1][0]-1) && intHand[0][0] == (intHand[2][0]-2) && intHand[0][0] == (intHand[3][0]-3) && intHand[0][0] == (intHand[4][0]-4)) || (intHand[0][0] == 1 && intHand[1][0] == 10 && intHand[2][0] == 11 && intHand[3][0] == 12 && intHand[4][0] == 13)){
-			con.println("straight");
-		}
-		
-		for(intCount = 0; intCount < 5; intCount++){
-			for(intCount2 = 0+intCount; intCount2< 5; intCount2++){
-				if(intHand[intCount][0] == intHand[intCount][1])
-				intCard = intHand[intCount][0];
-				con.println("pair " + intCard);
-				break;
+			for(intCount = 0; intCount < intSwap; intCount++){
+				intSwapped = Integer.parseInt(strSwappedCards.substring(intCount, intCount+1));
+				intRow++;
+				intHand[intSwapped-1][0] = intCards[intRow][0];
+				intHand[intSwapped-1][1] = intCards[intRow][1];
+			}
+			
+			for(intCount = 0; intCount < 5; intCount++){
+				con.print(intHand[intCount][0] + " ");
+				con.println(intHand[intCount][1]);
+				
+			}
+			intHand = sortHand(intHand);
+			
+			int intCardValue[];
+			intCardValue = new int[5];
+			int intSuitValue[];
+			intSuitValue = new int[5];
+			int intCardCount[];
+			intCardCount = new int[13];
+			
+			int intPairs = 0;
+			boolean blnThreeKind = false;
+			boolean blnFourKind = false;
+			boolean blnJacksUp = false;
+			boolean blnFullHouse = false;
+			boolean blnStraight = false;
+			boolean blnFlush = false;
+			boolean blnRoyalStr = false;
+			boolean blnStrFlush = false;
+			boolean blnRoyalFlush = false;
+			
+			for(intCount = 0; intCount < 5; intCount++){
+				intCardValue[intCount] = intHand[intCount][0];
+				intSuitValue[intCount] = intHand[intCount][1];
+				intCardCount[intCardValue[intCount]-1]++;
+			}
+			
+			for(intCount = 0; intCount < 13; intCount++){
+				if (intCardCount[intCount] == 2){
+					intPairs++;
+					con.println("found pair");
+				}else if (intCardCount[intCount] == 3){
+					blnThreeKind = true;
+					con.println("found 3k");
+					intMult = 3;
+				}else if (intCardCount[intCount] == 4){
+					blnFourKind = true;
+					con.println("found 4k");
+					intMult = 25;
+				}
+			}
+			
+			if (intPairs == 1){
+				if(blnThreeKind == true){
+					blnFullHouse = true;
+					con.println("is full");
+					intMult = 9;
+				}else if(intCardCount[0] == 2 || intCardCount[10] == 2 || intCardCount[11] == 2 || intCardCount[12] == 2){
+					blnJacksUp = true;
+					con.println("is jacks up");
+					intMult = 1;
+				}else{
+					intMult = -1;
+					con.println("pair not high enough");
+				}
+			}
+			
+			if (intPairs == 0){
+				intMult = -1;
+				con.println("no pairs");
+			}
+			
+			if(intPairs == 2){
+				intMult = 2;
+				con.println("2p");
+			}
+			
+			if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1)){
+				blnStraight = true;
+				con.println("str");
+				intMult = 4;
+			}
+			
+			if(intSuitValue[0] == intSuitValue[1] && intSuitValue[0] == intSuitValue[2] && intSuitValue[0] == intSuitValue[3] && intSuitValue[0] == intSuitValue[4]){
+				blnFlush = true;
+				con.println("flush");
+				intMult = 6;
+			}
+			
+			if((intCardValue[0] == 1 && intCardValue[1] == 10 && intCardValue[2] == 11 && intCardValue[3] == 12 && intCardValue[4] == 13)){
+				blnRoyalStr = true;
+				con.println("royal str");
+				intMult = 4;
+			}
+			
+			if(blnStraight == true && blnFlush == true){
+				blnStrFlush = true;
+				con.println("strflush");
+				intMult = 50;
+			}
+			
+			if(blnFlush == true && blnRoyalStr == true && intSuitValue[0] == 4){
+				blnRoyalFlush = true;
+				con.println("royal flush");
+				intMult = 800;
+			}
+			
+			
+			
+			intWin = intBet * intMult;
+			if (intMult != -1){
+				con.println("You won $" + intWin);
+			}else{
+				con.println("You lost $" + intBet);
+			}
+			intMoney += intWin;
+			
+			if(intMoney != 0){
+				con.println("do you want to play again? y/n");
+				strPlayAgain = con.readLine();
+			}else{
+				strPlayAgain = "n";
 			}
 		}
-		
 	}
 	
 	
