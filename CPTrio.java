@@ -1,13 +1,71 @@
 import arc.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 public class CPTrio{
 	public static void main(String[] args){
-		Console con = new Console();
-		int intMoney;
-		String strName;
+		Console con = new Console("Video Poker", 1280, 720);
+		
+		con.clear();
+		con.println("(Q)uit");
+		con.println("(P)lay");
+		con.println("(L)eaderboard");
+		
+		while (true){
+			con.clear();
+			char charTitleInput;
+			charTitleInput = con.getChar();
+			
+			if(charTitleInput == 'q' || charTitleInput == 'Q'){
+				con.closeConsole();
+			}
+			
+			if(charTitleInput == 's' || charTitleInput == 'S'){
+				con.println("Did you hear about the blonde who brought a bag of fries to the poker game?");
+				con.sleep(1000);
+				con.println("...");
+				con.sleep(1000);
+				con.println("...");
+				con.sleep(1000);
+				con.println("...");
+				con.sleep(1000);
+				con.println("Somebody told her to bring her own chips");
+				con.sleep(1000);
+				con.println("*crickets*");
+				con.sleep(1000);
+			}
+			
+			if(charTitleInput == 'p' || charTitleInput == 'P'){
+				con.clear();
+				con.setDrawColor(Color.BLACK);
+				con.fillRect(0, 0, 1280, 720);
+				
+				String strName;
+				con.println("What is your name?");
+				strName = con.readLine();
+				
+				int intMoney;
+				if (strName.equals("statitan")){
+					intMoney = 10000;
+				}else{
+					intMoney = 1000;
+				}
+				
+				GameScreen(con, intMoney);
+				TextOutputFile leaderboard = new TextOutputFile("leaderboard.txt", true);
+				leaderboard.println(strName);
+				leaderboard.println(intMoney);
+			}
+			
+			if(charTitleInput == 'l' || charTitleInput == 'L'){
+				TextInputFile lbScore = new TextOutputFile("leaderboard.txt");
+				
+			}
+		}
+	}
+		
+	public static int GameScreen(Console con, int intMoney){
 		int intCards[][];
-		
-		
 		int intHand[][];
 		intHand = new int[5][2];
 		int intRow;
@@ -15,24 +73,11 @@ public class CPTrio{
 		int intSwapped;
 		String strSwappedCards;
 		int intCount;
-		
 		int intBet;
 		int intMult;
 		int intWin;
-		
 		strSwappedCards = "";
 		String strPlayAgain = "y";
-		//Sort the card deck here bubble sort
-		
-		
-		con.println("What is your name?");
-		strName = con.readLine();
-		
-		if (strName.equals("statitan")){
-			intMoney = 10000;
-		}else{
-			intMoney = 1000;
-		}
 		
 		while(strPlayAgain.equalsIgnoreCase("y")){
 			intCards = loadDeck();
@@ -192,7 +237,9 @@ public class CPTrio{
 				strPlayAgain = "n";
 			}
 		}
+		return intMoney;
 	}
+	
 	
 	
 	
