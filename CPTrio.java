@@ -6,13 +6,12 @@ public class CPTrio{
 	public static void main(String[] args){
 		Console con = new Console("Video Poker", 1280, 720);
 		
-		con.clear();
-		con.println("(Q)uit");
-		con.println("(P)lay");
-		con.println("(L)eaderboard");
-		
 		while (true){
 			con.clear();
+			con.println("(Q)uit");
+			con.println("(P)lay");
+			con.println("(L)eaderboard");
+			
 			char charTitleInput;
 			charTitleInput = con.getChar();
 			
@@ -21,6 +20,7 @@ public class CPTrio{
 			}
 			
 			if(charTitleInput == 's' || charTitleInput == 'S'){
+				con.clear();
 				con.println("Did you hear about the blonde who brought a bag of fries to the poker game?");
 				con.sleep(1000);
 				con.println("...");
@@ -30,9 +30,9 @@ public class CPTrio{
 				con.println("...");
 				con.sleep(1000);
 				con.println("Somebody told her to bring her own chips");
-				con.sleep(1000);
+				con.sleep(2000);
 				con.println("*crickets*");
-				con.sleep(1000);
+				con.sleep(5000);
 			}
 			
 			if(charTitleInput == 'p' || charTitleInput == 'P'){
@@ -57,9 +57,30 @@ public class CPTrio{
 				leaderboard.println(intMoney);
 			}
 			
-			if(charTitleInput == 'l' || charTitleInput == 'L'){
-				TextInputFile lbScore = new TextOutputFile("leaderboard.txt");
+			if((charTitleInput == 'l' || charTitleInput == 'L')){
+				con.clear();
+				TextInputFile lbScore = new TextInputFile("leaderboard.txt");
+				int intCount = 0;
+				String strTempName;
+				int intTempMoney;
+				while(lbScore.eof() == false){
+					strTempName = lbScore.readLine();
+					intTempMoney = lbScore.readInt();
+					intCount++;
+				}
 				
+				String strLb[][];
+				strLb = new String[intCount][2];
+				intCount = 0;
+				while(lbScore.eof() == false){
+					strLb[intCount][0] = lbScore.readLine();
+					strLb[intCount][1] = lbScore.readLine();
+					intCount++;
+				}
+				con.println("Rank: Name - Money");
+				/*for(intCount = 0; intCount < 10; intCount++){
+					con.println((intCount+1) + ": " + strLb[intCount][0] + " - " + strLb[intCount][1]);
+				}*/
 			}
 		}
 	}
@@ -220,8 +241,6 @@ public class CPTrio{
 				intMult = 800;
 			}
 			
-			
-			
 			intWin = intBet * intMult;
 			if (intMult != -1){
 				con.println("You won $" + intWin);
@@ -307,8 +326,6 @@ public class CPTrio{
         int intCount;
         int intCount2;
         int intCount3;
-        
-        System.out.println("bubble sorting");
 
         for (intCount2 = 0; intCount2 < 5-1; intCount2++) {
             for (intCount = 0; intCount < 5-1; intCount++) {
@@ -322,6 +339,27 @@ public class CPTrio{
             }
         }
         return intDeck;
+    }
+    
+    public static String[][] sortLeaderboard(String strLb[][], int intRows) {
+
+        String strTemp [] = new String[2];
+        int intCount;
+        int intCount2;
+        int intCount3;
+
+        for (intCount2 = 0; intCount2 < intRows-1; intCount2++) {
+            for (intCount = 0; intCount < intRows-1; intCount++) {
+                if (Integer.parseInt(strLb[intCount][1]) > Integer.parseInt(strLb[intCount+1][1])) {
+                    for (intCount3 = 0; intCount3 < 2; intCount3++) {
+                        strTemp[intCount3] = strLb[intCount][intCount3];
+                        strLb[intCount][intCount3] = strLb[intCount+1][intCount3];
+                        strLb[intCount+1][intCount3] = strTemp[intCount3];
+                    }
+                }
+            }
+        }
+        return strLb;
     }
 }
 
