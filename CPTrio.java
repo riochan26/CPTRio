@@ -14,6 +14,7 @@ public class CPTrio{
 			
 			char charTitleInput;
 			charTitleInput = con.getChar();
+			char charReturn = 'a';
 			
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
 				con.closeConsole();
@@ -43,6 +44,11 @@ public class CPTrio{
 				String strName;
 				con.println("What is your name?");
 				strName = con.readLine();
+				while(strName.length() == 0 || strName.substring(0, 1) == " "){
+					con.println("Invalid");
+					con.println("What is your name?");
+					strName = con.readLine();
+				}
 				
 				int intMoney;
 				if (strName.equals("statitan")){
@@ -51,36 +57,47 @@ public class CPTrio{
 					intMoney = 1000;
 				}
 				
-				GameScreen(con, intMoney);
+				intMoney = GameScreen(con, intMoney);
 				TextOutputFile leaderboard = new TextOutputFile("leaderboard.txt", true);
 				leaderboard.println(strName);
 				leaderboard.println(intMoney);
 			}
 			
-			if((charTitleInput == 'l' || charTitleInput == 'L')){
+			if(charTitleInput == 'l' || charTitleInput == 'L'){
 				con.clear();
 				TextInputFile lbScore = new TextInputFile("leaderboard.txt");
 				int intCount = 0;
 				String strTempName;
-				int intTempMoney;
+				String strTempMoney;
 				while(lbScore.eof() == false){
 					strTempName = lbScore.readLine();
-					intTempMoney = lbScore.readInt();
+					strTempMoney = lbScore.readLine();
 					intCount++;
 				}
-				
+				lbScore.close();
 				String strLb[][];
 				strLb = new String[intCount][2];
 				intCount = 0;
+				lbScore = new TextInputFile("leaderboard.txt");
 				while(lbScore.eof() == false){
 					strLb[intCount][0] = lbScore.readLine();
 					strLb[intCount][1] = lbScore.readLine();
 					intCount++;
 				}
+				
+				strLb = sortLeaderboard(strLb, intCount);
 				con.println("Rank: Name - Money");
-				/*for(intCount = 0; intCount < 10; intCount++){
+				for(intCount = 0; intCount < 10; intCount++){
 					con.println((intCount+1) + ": " + strLb[intCount][0] + " - " + strLb[intCount][1]);
-				}*/
+				}
+				
+				con.println("Return (L)");
+				while(true){
+					charReturn = con.getChar();
+					if(charReturn == 'l' || charReturn == 'L'){
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -174,14 +191,11 @@ public class CPTrio{
 			for(intCount = 0; intCount < 13; intCount++){
 				if (intCardCount[intCount] == 2){
 					intPairs++;
-					con.println("found pair");
 				}else if (intCardCount[intCount] == 3){
 					blnThreeKind = true;
-					con.println("found 3k");
 					intMult = 3;
 				}else if (intCardCount[intCount] == 4){
 					blnFourKind = true;
-					con.println("found 4k");
 					intMult = 25;
 				}
 			}
@@ -189,55 +203,45 @@ public class CPTrio{
 			if (intPairs == 1){
 				if(blnThreeKind == true){
 					blnFullHouse = true;
-					con.println("is full");
 					intMult = 9;
 				}else if(intCardCount[0] == 2 || intCardCount[10] == 2 || intCardCount[11] == 2 || intCardCount[12] == 2){
 					blnJacksUp = true;
-					con.println("is jacks up");
 					intMult = 1;
 				}else{
 					intMult = -1;
-					con.println("pair not high enough");
 				}
 			}
 			
 			if (intPairs == 0){
 				intMult = -1;
-				con.println("no pairs");
 			}
 			
 			if(intPairs == 2){
 				intMult = 2;
-				con.println("2p");
 			}
 			
 			if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1)){
 				blnStraight = true;
-				con.println("str");
 				intMult = 4;
 			}
 			
 			if(intSuitValue[0] == intSuitValue[1] && intSuitValue[0] == intSuitValue[2] && intSuitValue[0] == intSuitValue[3] && intSuitValue[0] == intSuitValue[4]){
 				blnFlush = true;
-				con.println("flush");
 				intMult = 6;
 			}
 			
 			if((intCardValue[0] == 1 && intCardValue[1] == 10 && intCardValue[2] == 11 && intCardValue[3] == 12 && intCardValue[4] == 13)){
 				blnRoyalStr = true;
-				con.println("royal str");
 				intMult = 4;
 			}
 			
 			if(blnStraight == true && blnFlush == true){
 				blnStrFlush = true;
-				con.println("strflush");
 				intMult = 50;
 			}
 			
 			if(blnFlush == true && blnRoyalStr == true && intSuitValue[0] == 4){
 				blnRoyalFlush = true;
-				con.println("royal flush");
 				intMult = 800;
 			}
 			
@@ -250,6 +254,7 @@ public class CPTrio{
 			intMoney += intWin;
 			
 			if(intMoney != 0){
+				con.println("you now have $" + intMoney);
 				con.println("do you want to play again? y/n");
 				strPlayAgain = con.readLine();
 			}else{
@@ -300,67 +305,67 @@ public class CPTrio{
 	}
 	
 	public static int[][] sort(int intDeck[][]) {
-
-        int intTemp [] = new int [3];
-        int intCount;
-        int intCount2;
-        int intCount3;
-
-        for (intCount2 = 0; intCount2 < 52-1; intCount2++) {
-            for (intCount = 0; intCount < 52-1; intCount++) {
-                if (intDeck [intCount][2] > intDeck [intCount+1][2]) {
-                    for (intCount3 = 0; intCount3 < 3; intCount3++) {
-                        intTemp [intCount3] = intDeck [intCount][intCount3];
-                        intDeck [intCount][intCount3] = intDeck [intCount+1][intCount3];
-                        intDeck [intCount+1][intCount3] = intTemp [intCount3];
-                    }
-                }
-            }
-        }
-        return intDeck;
-    }
-    
-    public static int[][] sortHand(int intDeck[][]) {
-
-        int intTemp [] = new int [2];
-        int intCount;
-        int intCount2;
-        int intCount3;
-
-        for (intCount2 = 0; intCount2 < 5-1; intCount2++) {
-            for (intCount = 0; intCount < 5-1; intCount++) {
-                if (intDeck [intCount][0] > intDeck [intCount+1][0]) {
-                    for (intCount3 = 0; intCount3 < 2; intCount3++) {
-                        intTemp [intCount3] = intDeck [intCount][intCount3];
-                        intDeck [intCount][intCount3] = intDeck [intCount+1][intCount3];
-                        intDeck [intCount+1][intCount3] = intTemp [intCount3];
-                    }
-                }
-            }
-        }
-        return intDeck;
-    }
-    
-    public static String[][] sortLeaderboard(String strLb[][], int intRows) {
-
-        String strTemp [] = new String[2];
-        int intCount;
-        int intCount2;
-        int intCount3;
-
-        for (intCount2 = 0; intCount2 < intRows-1; intCount2++) {
-            for (intCount = 0; intCount < intRows-1; intCount++) {
-                if (Integer.parseInt(strLb[intCount][1]) > Integer.parseInt(strLb[intCount+1][1])) {
-                    for (intCount3 = 0; intCount3 < 2; intCount3++) {
-                        strTemp[intCount3] = strLb[intCount][intCount3];
-                        strLb[intCount][intCount3] = strLb[intCount+1][intCount3];
-                        strLb[intCount+1][intCount3] = strTemp[intCount3];
-                    }
-                }
-            }
-        }
-        return strLb;
-    }
+		
+		int intTemp[] = new int[3];
+		int intCount;
+		int intCount2;
+		int intCount3;
+		
+		for (intCount2 = 0; intCount2 < 52 - 1; intCount2++) {
+			for (intCount = 0; intCount < 52 - 1; intCount++) {
+				if (intDeck[intCount][2] > intDeck[intCount+1][2]) {
+					for (intCount3 = 0; intCount3 < 3; intCount3++) {
+						intTemp[intCount3] = intDeck[intCount][intCount3];
+						intDeck[intCount][intCount3] = intDeck[intCount+1][intCount3];
+						intDeck[intCount+1][intCount3] = intTemp[intCount3];
+					}
+				}
+			}
+		}
+		return intDeck;
+	}
+	
+	public static int[][] sortHand(int intDeck[][]) {
+		
+		int intTemp[] = new int[2];
+		int intCount;
+		int intCount2;
+		int intCount3;
+		
+		for (intCount2 = 0; intCount2 < 5 - 1; intCount2++) {
+			for (intCount = 0; intCount < 5 - 1; intCount++) {
+				if (intDeck[intCount][0] > intDeck[intCount+1][0]) {
+					for (intCount3 = 0; intCount3 < 2; intCount3++) {
+						intTemp[intCount3] = intDeck[intCount][intCount3];
+						intDeck[intCount][intCount3] = intDeck[intCount+1][intCount3];
+						intDeck[intCount+1][intCount3] = intTemp[intCount3];
+					}
+				}
+			}
+		}
+		return intDeck;
+	}
+	
+	public static String[][] sortLeaderboard(String strLb[][], int intRows) {
+		
+		String strTemp [] = new String[2];
+		int intCount;
+		int intCount2;
+		int intCount3;
+		
+		for (intCount2 = 0; intCount2 < intRows-1; intCount2++) {
+			for (intCount = 0; intCount < intRows-1; intCount++) {
+				if (Integer.parseInt(strLb[intCount][1]) < Integer.parseInt(strLb[intCount+1][1])) {
+					for (intCount3 = 0; intCount3 < 2; intCount3++) {
+						strTemp[intCount3] = strLb[intCount][intCount3];
+						strLb[intCount][intCount3] = strLb[intCount+1][intCount3];
+						strLb[intCount+1][intCount3] = strTemp[intCount3];
+					}
+				}
+			}
+		}
+		return strLb;
+	}
 }
 
 
