@@ -1,6 +1,7 @@
 import arc.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.Font;
 
 public class CPTrio{
 	public static void main(String[] args){
@@ -8,9 +9,10 @@ public class CPTrio{
 		
 		while (true){
 			con.clear();
-			con.println("(Q)uit");
-			con.println("(P)lay");
-			con.println("(L)eaderboard");
+			con.repaint();
+			BufferedImage imgMain = con.loadImage("assets/StartMenu.png");
+			con.drawImage(imgMain, 0, 0);
+			con.repaint();
 			
 			char charTitleInput;
 			charTitleInput = con.getChar();
@@ -120,9 +122,13 @@ public class CPTrio{
 		while(strPlayAgain.equalsIgnoreCase("y")){
 			intCards = loadDeck();
 			intCards = sort(intCards);
+			intBet = 0;
 			con.println("You have $" + intMoney);
-			con.println("How much do you bet?");
-			intBet = con.readInt();
+			while(intBet <= 0 || intBet > intMoney){
+				con.println("How much do you bet?");
+				intBet = con.readInt();
+			}
+			intMoney -= intBet;
 			intMult = 0;
 			intWin = 0;
 			
@@ -193,60 +199,63 @@ public class CPTrio{
 					intPairs++;
 				}else if (intCardCount[intCount] == 3){
 					blnThreeKind = true;
-					intMult = 3;
 				}else if (intCardCount[intCount] == 4){
 					blnFourKind = true;
-					intMult = 25;
 				}
 			}
 			
 			if (intPairs == 1){
 				if(blnThreeKind == true){
 					blnFullHouse = true;
-					intMult = 9;
 				}else if(intCardCount[0] == 2 || intCardCount[10] == 2 || intCardCount[11] == 2 || intCardCount[12] == 2){
 					blnJacksUp = true;
-					intMult = 1;
-				}else{
-					intMult = -1;
 				}
-			}
-			
-			if (intPairs == 0){
-				intMult = -1;
-			}
-			
-			if(intPairs == 2){
-				intMult = 2;
 			}
 			
 			if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1)){
 				blnStraight = true;
-				intMult = 4;
 			}
 			
 			if(intSuitValue[0] == intSuitValue[1] && intSuitValue[0] == intSuitValue[2] && intSuitValue[0] == intSuitValue[3] && intSuitValue[0] == intSuitValue[4]){
 				blnFlush = true;
-				intMult = 6;
 			}
 			
 			if((intCardValue[0] == 1 && intCardValue[1] == 10 && intCardValue[2] == 11 && intCardValue[3] == 12 && intCardValue[4] == 13)){
 				blnRoyalStr = true;
-				intMult = 4;
 			}
 			
 			if(blnStraight == true && blnFlush == true){
 				blnStrFlush = true;
-				intMult = 50;
 			}
 			
 			if(blnFlush == true && blnRoyalStr == true && intSuitValue[0] == 4){
 				blnRoyalFlush = true;
+			}
+			
+			if(blnRoyalFlush == true){
 				intMult = 800;
+			}else if(blnStrFlush == true){
+				intMult = 50;
+			}else if(blnFourKind == true){
+				intMult = 25;
+			}else if(blnFullHouse == true){
+				intMult = 9;
+			}else if(blnFlush == true){
+				intMult = 6;
+			}else if(blnStraight == true){
+				intMult = 4;
+			}else if(blnThreeKind == true){
+				intMult = 3;
+			}else if(intPairs == 2){
+				intMult = 2;
+			}else if(blnJacksUp == true){
+				intMult = 1;
+			}else{
+				intMult = 0;
 			}
 			
 			intWin = intBet * intMult;
-			if (intMult != -1){
+			if (intMult != 0){
 				con.println("You won $" + intWin);
 			}else{
 				con.println("You lost $" + intBet);
@@ -259,6 +268,8 @@ public class CPTrio{
 				strPlayAgain = con.readLine();
 			}else{
 				strPlayAgain = "n";
+				con.println("Press any button to return to menu");
+				con.getChar();
 			}
 		}
 		return intMoney;
