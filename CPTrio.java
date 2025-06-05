@@ -6,7 +6,10 @@ import java.awt.Font;
 public class CPTrio{
 	public static void main(String[] args){
 		Console con = new Console("Video Poker", 1280, 720);
+		mainMenu(con);
+	}
 		
+	public static void mainMenu(Console con){
 		while (true){
 			con.clear();
 			BufferedImage imgMain = con.loadImage("assets/StartMenu.png");
@@ -16,15 +19,17 @@ public class CPTrio{
 			char charTitleInput;
 			charTitleInput = con.getChar();
 			char charReturn = 'a';
+			Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
+			con.setDrawFont(txtFont);
 			
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
 				boolean blnQuit = true;
 				int intyQuit = -720;
+				con.setDrawColor(new Color(0, 0, 0, 128));
 				BufferedImage imgQuit = con.loadImage("assets/Quit.png");
 				System.out.println("pressed q");
 				while(intyQuit != 0){
 					con.drawImage(imgMain, 0, 0);
-					con.setDrawColor(new Color(0, 0, 0, 128));
 					con.fillRect(0, intyQuit, 1280, 720);
 					con.drawImage(imgQuit, 345, intyQuit+205);
 					con.repaint();
@@ -41,7 +46,6 @@ public class CPTrio{
 					}else if(charConfirm == 'n' || charConfirm == 'N'){
 						while(intyQuit != -720){
 							con.drawImage(imgMain, 0, 0);
-							con.setDrawColor(new Color(0, 0, 0, 128));
 							con.fillRect(0, intyQuit, 1280, 720);
 							con.drawImage(imgQuit, 345, intyQuit+205);
 							con.repaint();
@@ -73,19 +77,46 @@ public class CPTrio{
 			}
 			
 			if(charTitleInput == 'p' || charTitleInput == 'P'){
+				System.out.println("play game");
 				con.clear();
+				System.out.println("cleared");
 				con.setDrawColor(Color.BLACK);
 				con.fillRect(0, 0, 1280, 720);
+				con.repaint();
+				con.setDrawFont(txtFont);
+				con.setDrawColor(Color.WHITE);
+				String strName = "gurt";
 				
-				String strName;
-				con.println("What is your name?");
-				strName = con.readLine();
-				while(strName.length() == 0 || strName.substring(0, 1) == " "){
-					con.println("Invalid");
-					con.println("What is your name?");
-					strName = con.readLine();
+				while(true){
+					char charTyped = con.getChar();
+					if(charTyped == 8 && strName.length() > 0){
+						strName = strName.substring(0, strName.length()-1);
+					}else if(charTyped >= 32 || charTyped < 127){
+						strName = strName + charTyped;
+					}else if(charTyped == 27){
+						mainMenu(con);
+					}else if(charTyped == '\n'){
+						if(strName.equals("")){
+							//con.drawImage(imgMain, 0, 0);
+							con.setDrawColor(Color.RED);
+							con.drawString("Invalid Name!", 534, 340);
+							con.repaint();
+							con.setDrawColor(Color.WHITE);
+							con.sleep(1200); 
+							//con.drawImage(imgMain, 0, 0);
+							con.repaint();
+							strName = ""; 
+							continue;
+						}else{
+							break;
+						}
+					}
+					con.clear();
+					System.out.println(charTyped);
+					System.out.println(strName);
+					con.drawString(strName, 534, 340);
+					con.repaint();
 				}
-				
 				int intMoney;
 				if (strName.equals("statitan")){
 					intMoney = 10000;
@@ -128,8 +159,6 @@ public class CPTrio{
 				int intxRank = 275;
 				int intxName = 385;
 				int intxMoney = 700;
-				Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
-				con.setDrawFont(txtFont);
 				con.setDrawColor(Color.WHITE);
 				strLb = sortLeaderboard(strLb, intCount);
 				for(intCount = 0; intCount < 10; intCount++){
