@@ -18,13 +18,37 @@ public class CPTrio{
 			char charReturn = 'a';
 			
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
-				char charConfirm = con.getChar();
 				boolean blnQuit = true;
+				int intyQuit = -720;
+				BufferedImage imgQuit = con.loadImage("assets/Quit.png");
+				System.out.println("pressed q");
+				while(intyQuit != 0){
+					con.drawImage(imgMain, 0, 0);
+					con.setDrawColor(new Color(0, 0, 0, 128));
+					con.fillRect(0, intyQuit, 1280, 720);
+					con.drawImage(imgQuit, 345, intyQuit+205);
+					con.repaint();
+					con.sleep(5);
+					intyQuit += 10;
+					System.out.println(intyQuit);
+				}
 				
+				char charConfirm;
 				while(blnQuit == true){
+					charConfirm = con.getChar();
 					if(charConfirm == 'y' || charConfirm == 'Y'){
 						con.closeConsole();
 					}else if(charConfirm == 'n' || charConfirm == 'N'){
+						while(intyQuit != -720){
+							con.drawImage(imgMain, 0, 0);
+							con.setDrawColor(new Color(0, 0, 0, 128));
+							con.fillRect(0, intyQuit, 1280, 720);
+							con.drawImage(imgQuit, 345, intyQuit+205);
+							con.repaint();
+							con.sleep(5);
+							intyQuit -= 10;
+							System.out.println(intyQuit);
+						}
 						blnQuit = false;
 						break;
 					}
