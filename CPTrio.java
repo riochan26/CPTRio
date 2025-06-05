@@ -9,7 +9,6 @@ public class CPTrio{
 		
 		while (true){
 			con.clear();
-			con.repaint();
 			BufferedImage imgMain = con.loadImage("assets/StartMenu.png");
 			con.drawImage(imgMain, 0, 0);
 			con.repaint();
@@ -19,7 +18,18 @@ public class CPTrio{
 			char charReturn = 'a';
 			
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
-				con.closeConsole();
+				char charConfirm = con.getChar();
+				boolean blnQuit = true;
+				
+				while(blnQuit == true){
+					if(charConfirm == 'y' || charConfirm == 'Y'){
+						con.closeConsole();
+					}else if(charConfirm == 'n' || charConfirm == 'N'){
+						blnQuit = false;
+						break;
+					}
+				}
+				
 			}
 			
 			if(charTitleInput == 's' || charTitleInput == 'S'){
@@ -66,7 +76,11 @@ public class CPTrio{
 			}
 			
 			if(charTitleInput == 'l' || charTitleInput == 'L'){
+				System.out.println("printing leaderboard");
 				con.clear();
+				BufferedImage imgLB = con.loadImage("assets/Leaderboard.png");
+				con.drawImage(imgLB, 0, 0);
+				con.repaint();
 				TextInputFile lbScore = new TextInputFile("leaderboard.txt");
 				int intCount = 0;
 				String strTempName;
@@ -86,20 +100,36 @@ public class CPTrio{
 					strLb[intCount][1] = lbScore.readLine();
 					intCount++;
 				}
-				
+				int inty = 125;
+				int intxRank = 275;
+				int intxName = 385;
+				int intxMoney = 700;
+				Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
+				con.setDrawFont(txtFont);
+				con.setDrawColor(Color.WHITE);
 				strLb = sortLeaderboard(strLb, intCount);
-				con.println("Rank: Name - Money");
 				for(intCount = 0; intCount < 10; intCount++){
-					con.println((intCount+1) + ": " + strLb[intCount][0] + " - " + strLb[intCount][1]);
+					con.drawString(Integer.toString(intCount+1), intxRank, inty);
+					con.drawString(strLb[intCount][0], intxName, inty);
+					con.drawString("$" + strLb[intCount][1], intxMoney, inty);
+					inty += 50;
+					con.repaint();
 				}
+				System.out.println("printed leaderboard");
 				
-				con.println("Return (L)");
 				while(true){
 					charReturn = con.getChar();
 					if(charReturn == 'l' || charReturn == 'L'){
 						break;
 					}
 				}
+			}
+			
+			if(charTitleInput == 'h' || charTitleInput == 'H'){
+				System.out.println("help");
+				con.println("help");
+				con.println("press any key to return");
+				con.getChar();
 			}
 		}
 	}
