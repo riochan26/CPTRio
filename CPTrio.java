@@ -79,24 +79,58 @@ public class CPTrio{
 			if(charTitleInput == 'p' || charTitleInput == 'P'){
 				System.out.println("play game");
 				con.clear();
-				System.out.println("cleared");
-				con.setDrawColor(Color.BLACK);
-				con.fillRect(0, 0, 1280, 720);
-				con.repaint();
 				con.setDrawFont(txtFont);
-				con.setDrawColor(Color.WHITE);
-				String strName = "gurt";
+				String strName = "";
+				boolean blnNameEntered = false;
 				
-				while(true){
+				int intyName = -720;
+				con.setDrawColor(new Color(0, 0, 0, 128));
+				BufferedImage imgName = con.loadImage("assets/EnterName.png");
+				while(intyName != 0){
+					con.drawImage(imgMain, 0, 0);
+					con.fillRect(0, intyName, 1280, 720);
+					con.drawImage(imgName, 345, intyName+205);
+					con.repaint();
+					con.sleep(5);
+					intyName += 10;
+					System.out.println(intyName);
+				}
+				while(blnNameEntered == false){
+					System.out.println("resetting screen state");
+					
+					con.fillRect(0, intyName, 1280, 720);
+					con.drawImage(imgName, 345, intyName+205);
+					
+					con.setDrawColor(Color.WHITE);
+					con.drawString(strName, 534, 340);
+					System.out.println("reset");
+					
 					char charTyped = con.getChar();
 					if(charTyped == 8 && strName.length() > 0){
 						strName = strName.substring(0, strName.length()-1);
-					}else if(charTyped >= 32 || charTyped < 127){
+					}
+					if((charTyped < 32 || charTyped > 127)){
+						strName = strName;
+					}else{
 						strName = strName + charTyped;
-					}else if(charTyped == 27){
+					}
+					if(charTyped == 27){
+						while(intyName != -720){
+							con.setDrawColor(new Color(0, 0, 0, 128));
+							con.drawImage(imgMain, 0, 0);
+							con.fillRect(0, intyName, 1280, 720);
+							con.drawImage(imgName, 345, intyName+205);
+							con.repaint();
+							con.sleep(5);
+							intyName -= 10;
+							System.out.println(intyName);
+						}
 						mainMenu(con);
-					}else if(charTyped == '\n'){
-						if(strName.equals("")){
+					}
+					if(charTyped == '\n'){
+						if(!strName.equals("")){
+							blnNameEntered = true;
+						}else{
 							//con.drawImage(imgMain, 0, 0);
 							con.setDrawColor(Color.RED);
 							con.drawString("Invalid Name!", 534, 340);
@@ -107,15 +141,12 @@ public class CPTrio{
 							con.repaint();
 							strName = ""; 
 							continue;
-						}else{
-							break;
 						}
 					}
 					con.clear();
 					System.out.println(charTyped);
 					System.out.println(strName);
-					con.drawString(strName, 534, 340);
-					con.repaint();
+					con.sleep(5);
 				}
 				int intMoney;
 				if (strName.equals("statitan")){
@@ -180,9 +211,27 @@ public class CPTrio{
 			
 			if(charTitleInput == 'h' || charTitleInput == 'H'){
 				System.out.println("help");
-				con.println("help");
-				con.println("press any key to return");
-				con.getChar();
+				con.clear();
+				BufferedImage imgHelp1 = con.loadImage("assets/Help[0].png");
+				BufferedImage imgHelp2 = con.loadImage("assets/Help[1].png");
+				
+				con.drawImage(imgHelp1, 0, 0);
+				con.repaint();
+				while(true){
+					charReturn = con.getChar();
+					if(charReturn == 'h' || charReturn == 'H'){
+						break;
+					}
+				}
+				
+				con.drawImage(imgHelp2, 0, 0);
+				con.repaint();
+				while(true){
+					charReturn = con.getChar();
+					if(charReturn == 'h' || charReturn == 'H'){
+						break;
+					}
+				}
 			}
 		}
 	}
