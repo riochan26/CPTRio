@@ -10,6 +10,7 @@ public class CPTrio{
 	}
 		
 	public static void mainMenu(Console con){
+		Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
 		while (true){
 			con.clear();
 			BufferedImage imgMain = con.loadImage("assets/StartMenu.png");
@@ -19,7 +20,6 @@ public class CPTrio{
 			char charTitleInput;
 			charTitleInput = con.getChar();
 			char charReturn = 'a';
-			Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
 			con.setDrawFont(txtFont);
 			
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
@@ -84,10 +84,10 @@ public class CPTrio{
 				boolean blnNameEntered = false;
 				
 				int intyName = -720;
-				con.setDrawColor(new Color(0, 0, 0, 128));
 				BufferedImage imgName = con.loadImage("assets/EnterName.png");
 				while(intyName != 0){
 					con.drawImage(imgMain, 0, 0);
+					con.setDrawColor(new Color(0, 0, 0, 128));
 					con.fillRect(0, intyName, 1280, 720);
 					con.drawImage(imgName, 345, intyName+205);
 					con.repaint();
@@ -98,12 +98,16 @@ public class CPTrio{
 				while(blnNameEntered == false){
 					System.out.println("resetting screen state");
 					
+					con.drawImage(imgMain, 0, 0);
+					con.setDrawColor(new Color(0, 0, 0, 128));
 					con.fillRect(0, intyName, 1280, 720);
 					con.drawImage(imgName, 345, intyName+205);
 					
 					con.setDrawColor(Color.WHITE);
-					con.drawString(strName, 534, 340);
+					con.drawString(strName, 430, 360);
 					System.out.println("reset");
+					
+					con.repaint();
 					
 					char charTyped = con.getChar();
 					if(charTyped == 8 && strName.length() > 0){
@@ -133,7 +137,7 @@ public class CPTrio{
 						}else{
 							//con.drawImage(imgMain, 0, 0);
 							con.setDrawColor(Color.RED);
-							con.drawString("Invalid Name!", 534, 340);
+							con.drawString("Invalid Name!", 430, 360);
 							con.repaint();
 							con.setDrawColor(Color.WHITE);
 							con.sleep(1200); 
@@ -143,7 +147,6 @@ public class CPTrio{
 							continue;
 						}
 					}
-					con.clear();
 					System.out.println(charTyped);
 					System.out.println(strName);
 					con.sleep(5);
@@ -250,19 +253,80 @@ public class CPTrio{
 		int intWin;
 		strSwappedCards = "";
 		String strPlayAgain = "y";
+		boolean blnBet;
+		int intxBet = 0;
+		con.clear();
+		BufferedImage imgGame = con.loadImage("assets/GameMenu.png");
+		BufferedImage imgBet = con.loadImage("assets/Bet.png");
+		String strBet = "";
+		String strBetDraw = "";
+		int textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
 		
 		while(strPlayAgain.equalsIgnoreCase("y")){
+			blnBet = false;
+			
 			intCards = loadDeck();
 			intCards = sort(intCards);
 			intBet = 0;
-			con.println("You have $" + intMoney);
-			while(intBet <= 0 || intBet > intMoney){
-				con.println("How much do you bet?");
-				intBet = con.readInt();
+			while(blnBet == false){
+				con.clear();
+				
+				strBetDraw = "Bet: $" + strBet;
+				textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
+				intxBet = 1280 - textWidth - 100;
+				
+				con.drawImage(imgGame, 0, 0);
+				con.drawString("Money: $" + intMoney, 53, 35);
+				con.drawString(strBetDraw, intxBet, 35);
+				con.setDrawColor(new Color(0, 0, 0, 128));
+				con.fillRect(0, 0, 1280, 720);
+				con.drawImage(imgBet, 345, 205);
+				con.setDrawColor(Color.WHITE);
+				con.drawString(strBet, 430, 360);
+				con.repaint();
+				
+				
+				char charTyped = con.getChar();
+					if(charTyped == 8 && strBet.length() > 0){
+						strBet = strBet.substring(0, strBet.length()-1);
+					}
+					if((charTyped < 48 || charTyped > 57)){
+						strBet = strBet;
+					}else{
+						strBet = strBet + charTyped;
+					}
+					if(charTyped == '\n'){
+						if(!strBet.equals("") && Integer.parseInt(strBet) > 0 && Integer.parseInt(strBet) <= intMoney){
+							blnBet = true;
+						}else{
+							con.drawImage(imgGame, 0, 0);
+							con.drawString("Money: $" + intMoney, 53, 35);
+							con.drawString(strBetDraw, intxBet, 35);
+							con.setDrawColor(new Color(0, 0, 0, 128));
+							con.fillRect(0, 0, 1280, 720);
+							con.drawImage(imgBet, 345, 205);
+							con.setDrawColor(Color.RED);
+							con.drawString("Invalid Bet!", 430, 360);
+							con.repaint();
+							con.setDrawColor(Color.WHITE);
+							con.sleep(1200); 
+							con.repaint();
+							strBet = ""; 
+							continue;
+						}
+					}
+					System.out.println(charTyped);
+					System.out.println(strBet);
+					System.out.println(intBet);
+					con.sleep(5);
 			}
+			intBet = Integer.parseInt(strBet);
 			intMoney -= intBet;
 			intMult = 0;
 			intWin = 0;
+			con.clear();
+			con.drawImage(imgGame, 0, 0);
+			con.repaint();
 			
 			for(intRow = 0; intRow < 5; intRow++){
 				intHand[intRow][0] = intCards[intRow][0];
