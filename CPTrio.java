@@ -269,7 +269,6 @@ public class CPTrio{
 			intCards = sort(intCards);
 			intBet = 0;
 			while(blnBet == false){
-				con.clear();
 				
 				strBetDraw = "Bet: $" + strBet;
 				textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
@@ -331,7 +330,34 @@ public class CPTrio{
 			for(intRow = 0; intRow < 5; intRow++){
 				intHand[intRow][0] = intCards[intRow][0];
 				intHand[intRow][1] = intCards[intRow][1];
+				animCard(intHand, intRow, con, true);
 				con.println(intHand[intRow][0] + " " + intHand[intRow][1]);
+			}
+			boolean blnSwapPhase = true;
+			boolean blnCard1Swap = false;
+			
+			while(blnSwapPhase == true){
+				BufferedImage imgBack = con.loadImage("assets/cardback.png");
+				int intxMouse = con.currentMouseX();
+				int intyMouse = con.currentMouseY();
+				int intClicked = con.currentMouseButton();
+				//System.out.println(intxMouse);
+				//System.out.println(intyMouse);
+				//System.out.println(intClicked);
+				for(intCount = 0; intCount < 5; intCount++){
+					System.out.println(intCount);
+					BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount][0]) + Integer.toString(intHand[intCount][1]) + ".png");
+					con.drawImage(imgFront, 165 + 202*intCount, 365);
+				}
+				if(intyMouse >= 365 && intyMouse <= 555 && intClicked == 1){
+					if(intxMouse >= 165 && intxMouse <= 307){
+						blnCard1Swap = true;
+					}
+				}
+				
+				if(blnCard1Swap == true){
+					con.drawImage(imgBack, 165, 365);
+				}
 			}
 			
 			con.println("How many cards would you like to swap");
@@ -572,6 +598,41 @@ public class CPTrio{
 			}
 		}
 		return strLb;
+	}
+	
+	public static void animCard(int intHand[][], int intCount, Console con, boolean blnUp){
+		BufferedImage imgBack = con.loadImage("assets/cardback.png");
+		BufferedImage imgGame = con.loadImage("assets/GameMenu.png");
+		int intxCard = 165 + 202*intCount;
+		
+		if(blnUp == true){
+			int intyCard = 915;
+			while(intyCard != 355){
+				con.drawImage(imgGame, 0, 0);
+				for(int intCount2 = 0; intCount2 < intCount; intCount2++){
+					System.out.println(intCount2);
+					BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount2][0]) + Integer.toString(intHand[intCount2][1]) + ".png");
+					con.drawImage(imgFront, 165 + 202*intCount2, 365);
+				}
+				con.drawImage(imgBack, intxCard, intyCard);
+				intyCard -= 10;
+				System.out.println(intyCard);
+				con.repaint();
+				con.sleep(5);
+			}
+			intyCard += 10;
+		}
+		else{
+			int intyCard = 365;
+			while(intyCard != 925){
+				con.drawImage(imgBack, intxCard, intyCard);
+				intyCard += 10;
+				System.out.println(intyCard);
+				con.repaint();
+				con.sleep(5);
+			}
+			intyCard -= 10;
+		}
 	}
 }
 
