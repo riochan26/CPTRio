@@ -1,3 +1,9 @@
+//-------------------------------------------------------------------------
+// Name:         RioCPT
+// Purpose:      Create a Jacks or Better Video Poker Game
+// Author:       Chan R.
+// Created:      May 28, 2025
+//-------------------------------------------------------------------------
 import arc.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -8,10 +14,11 @@ public class CPTrio{
 		Console con = new Console("Video Poker", 1280, 720);
 		mainMenu(con);
 	}
-		
+
 	public static void mainMenu(Console con){
 		Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
 		while (true){
+			//Create the Main Menu
 			con.clear();
 			BufferedImage imgMain = con.loadImage("assets/StartMenu.png");
 			con.drawImage(imgMain, 0, 0);
@@ -22,6 +29,7 @@ public class CPTrio{
 			char charReturn = 'a';
 			con.setDrawFont(txtFont);
 			
+			//Key Inputs to Access Menus
 			if(charTitleInput == 'q' || charTitleInput == 'Q'){
 				boolean blnQuit = true;
 				int intyQuit = -720;
@@ -29,6 +37,7 @@ public class CPTrio{
 				BufferedImage imgQuit = con.loadImage("assets/Quit.png");
 				System.out.println("pressed q");
 				while(intyQuit != 0){
+					//Screen Animation
 					con.drawImage(imgMain, 0, 0);
 					con.fillRect(0, intyQuit, 1280, 720);
 					con.drawImage(imgQuit, 345, intyQuit+205);
@@ -37,7 +46,7 @@ public class CPTrio{
 					intyQuit += 10;
 					System.out.println(intyQuit);
 				}
-				
+				//Confirm Quit
 				char charConfirm;
 				while(blnQuit == true){
 					charConfirm = con.getChar();
@@ -57,27 +66,41 @@ public class CPTrio{
 						break;
 					}
 				}
-				
 			}
 			
 			if(charTitleInput == 's' || charTitleInput == 'S'){
-				con.clear();
-				con.println("Did you hear about the blonde who brought a bag of fries to the poker game?");
+				//Secret Joke
+				BufferedImage imgSecret = con.loadImage("assets/secretMenu.png");
+				Font jokeFont = con.loadFont("assets/Raleway-SemiBold.ttf", 26);
+				con.setDrawColor(new Color(0, 0, 0, 128));
+				con.setDrawFont(jokeFont);
+				con.fillRect(0, 0, 1280, 720);
+				con.drawImage(imgSecret, 345, 205);
+				con.setDrawColor(Color.WHITE);
+				con.drawString("Did you hear about the blonde who", 423, 283);
+				con.drawString("brought a bag of fries to the poker game?", 385, 308);
+				con.repaint();
 				con.sleep(1000);
-				con.println("...");
+				con.drawString(".", 631, 350);
+				con.repaint();
 				con.sleep(1000);
-				con.println("...");
+				con.drawString("..", 631, 350);
+				con.repaint();
 				con.sleep(1000);
-				con.println("...");
+				con.drawString("...", 631, 350);
+				con.repaint();
 				con.sleep(1000);
-				con.println("Somebody told her to bring her own chips");
+				con.drawString("Somebody told her to bring her own chips!", 379, 392);
+				con.repaint();
 				con.sleep(2000);
-				con.println("*crickets*");
+				con.drawString("*crickets*", 584, 443);
+				con.repaint();
 				con.sleep(5000);
 			}
 			
 			if(charTitleInput == 'p' || charTitleInput == 'P'){
 				System.out.println("play game");
+				//Ask User for Name
 				con.clear();
 				con.setDrawFont(txtFont);
 				String strName = "";
@@ -108,7 +131,7 @@ public class CPTrio{
 					System.out.println("reset");
 					
 					con.repaint();
-					
+					//Drawing Name to Screen
 					char charTyped = con.getChar();
 					if(charTyped == 8 && strName.length() > 0){
 						strName = strName.substring(0, strName.length()-1);
@@ -135,13 +158,12 @@ public class CPTrio{
 						if(!strName.equals("")){
 							blnNameEntered = true;
 						}else{
-							//con.drawImage(imgMain, 0, 0);
+							//prevents nameless players
 							con.setDrawColor(Color.RED);
 							con.drawString("Invalid Name!", 430, 360);
 							con.repaint();
 							con.setDrawColor(Color.WHITE);
 							con.sleep(1200); 
-							//con.drawImage(imgMain, 0, 0);
 							con.repaint();
 							strName = ""; 
 							continue;
@@ -151,21 +173,24 @@ public class CPTrio{
 					System.out.println(strName);
 					con.sleep(5);
 				}
+				//Secret Name
 				int intMoney;
 				if (strName.equals("statitan")){
 					intMoney = 10000;
 				}else{
 					intMoney = 1000;
 				}
-				
+				//Send to game state, append money and name to leaderboard
 				intMoney = GameScreen(con, intMoney);
 				TextOutputFile leaderboard = new TextOutputFile("leaderboard.txt", true);
 				leaderboard.println(strName);
 				leaderboard.println(intMoney);
+				leaderboard.close();
 			}
 			
 			if(charTitleInput == 'l' || charTitleInput == 'L'){
 				System.out.println("printing leaderboard");
+				//Leaderboard Printing
 				con.clear();
 				BufferedImage imgLB = con.loadImage("assets/Leaderboard.png");
 				con.drawImage(imgLB, 0, 0);
@@ -174,6 +199,7 @@ public class CPTrio{
 				int intCount = 0;
 				String strTempName;
 				String strTempMoney;
+				//Counting length of file
 				while(lbScore.eof() == false){
 					strTempName = lbScore.readLine();
 					strTempMoney = lbScore.readLine();
@@ -194,6 +220,7 @@ public class CPTrio{
 				int intxName = 385;
 				int intxMoney = 700;
 				con.setDrawColor(Color.WHITE);
+				//Bubble Sort Leaderboard and Print
 				strLb = sortLeaderboard(strLb, intCount);
 				for(intCount = 0; intCount < 10; intCount++){
 					con.drawString(Integer.toString(intCount+1), intxRank, inty);
@@ -204,6 +231,7 @@ public class CPTrio{
 				}
 				System.out.println("printed leaderboard");
 				
+				//Wait for user input to return to main menu
 				while(true){
 					charReturn = con.getChar();
 					if(charReturn == 'l' || charReturn == 'L'){
@@ -214,19 +242,21 @@ public class CPTrio{
 			
 			if(charTitleInput == 'h' || charTitleInput == 'H'){
 				System.out.println("help");
+				//Opens help menu
 				con.clear();
 				BufferedImage imgHelp1 = con.loadImage("assets/Help[0].png");
 				BufferedImage imgHelp2 = con.loadImage("assets/Help[1].png");
 				
 				con.drawImage(imgHelp1, 0, 0);
 				con.repaint();
+				//Wait for input to go to next screen
 				while(true){
 					charReturn = con.getChar();
 					if(charReturn == 'h' || charReturn == 'H'){
 						break;
 					}
 				}
-				
+				//Wait for input to go to next screen
 				con.drawImage(imgHelp2, 0, 0);
 				con.repaint();
 				while(true){
@@ -263,7 +293,7 @@ public class CPTrio{
 		
 		while(strPlayAgain.equalsIgnoreCase("p")){
 			blnBet = false;
-			
+			//create and sort deck
 			intCards = loadDeck();
 			intCards = sort(intCards);
 			intBet = 0;
@@ -279,6 +309,7 @@ public class CPTrio{
 				textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
 				intxBet = 1280 - textWidth - 100;
 				
+				//draw bet screen
 				con.drawImage(imgGame, 0, 0);
 				con.drawString("Money: $" + intMoney, 53, 35);
 				con.drawString(strBetDraw, intxBet, 35);
@@ -289,6 +320,7 @@ public class CPTrio{
 				con.drawString(strBet, 430, 360);
 				con.repaint();
 				
+				//request user for bet and draw to screen
 				char charTyped = con.getChar();
 					if(charTyped == 8 && strBet.length() > 0){
 						strBet = strBet.substring(0, strBet.length()-1);
@@ -331,10 +363,11 @@ public class CPTrio{
 			con.drawImage(imgGame, 0, 0);
 			con.repaint();
 			
+			//get 5 cards onto screen
 			for(intRow = 0; intRow < 5; intRow++){
 				intHand[intRow][0] = intCards[intRow][0];
 				intHand[intRow][1] = intCards[intRow][1];
-				animCard(intHand, intRow, con, true, intMoney, strBetDraw, intxBet);
+				animCard(intHand, intRow, con, intMoney, strBetDraw, intxBet);
 				System.out.println(intHand[intRow][0] + " " + intHand[intRow][1]);
 			}
 			boolean blnSwapPhase = true;
@@ -348,6 +381,7 @@ public class CPTrio{
 			con.drawString("You keep the face-up cards", 454, 184);
 			con.drawString("Press [Enter] to confirm selection", 406, 212);
 			
+			//Starts swapping phase
 			while(blnSwapPhase == true){
 				int intxMouse = con.currentMouseX();
 				int intyMouse = con.currentMouseY();
@@ -361,6 +395,7 @@ public class CPTrio{
 					con.drawImage(imgFront, 165 + 202*intCount, 365);
 					
 				}
+				//hitbox system, toggleable
 				if(intyMouse >= 365 && intyMouse <= 555 && intClicked == 1){
 					if(intxMouse >= 165 && intxMouse <= 307){
 						con.sleep(200);
@@ -399,7 +434,7 @@ public class CPTrio{
 							}
 					}
 				}
-				
+				//illusion of "flipping" the cards when clicked
 				if(blnCard1Swap == true){
 					con.drawImage(imgBack, 165, 365);
 				}
@@ -415,14 +450,15 @@ public class CPTrio{
 				if(blnCard5Swap == true){
 					con.drawImage(imgBack, 973, 365);
 				}
+				//when enter is press, confirm choices
 				char charTyped = con.currentChar();
 				if(charTyped == '\n'){
 					blnSwapPhase = false;
 				}
-				
 				con.repaint();
 			}
 			
+			//redraw the entire screen to remove instructions
 			con.drawImage(imgGame, 0, 0);
 			con.drawString("Money: $" + intMoney, 53, 35);
 			con.drawString(strBetDraw, intxBet, 35);
@@ -452,7 +488,7 @@ public class CPTrio{
 			con.setDrawFont(titleFont);
 			con.drawString("Swapping...", 503, 199);
 			con.repaint();
-			
+			//swaps the face down cards
 			if(blnCard1Swap == true){
 				intRow++;
 				System.out.println("swapping 1st");
@@ -484,7 +520,7 @@ public class CPTrio{
 				intHand[4][1] = intCards[intRow][1];
 			}
 			
-			
+			//pause to add tension, redraw screen to remove instructions
 			con.sleep(5000);
 			con.clear();
 			con.setDrawFont(txtFont);
@@ -502,7 +538,7 @@ public class CPTrio{
 			
 			con.sleep(2000);
 			intHand = sortHand(intHand);
-			
+			//determine the value of the hand
 			int intCardValue[];
 			intCardValue = new int[5];
 			int intSuitValue[];
@@ -550,23 +586,19 @@ public class CPTrio{
 			if((intCardValue[0] == intCardValue[1]-1 && intCardValue[1] == intCardValue[2]-1 && intCardValue[2] == intCardValue[3]-1 && intCardValue[3] == intCardValue[4]-1)){
 				blnStraight = true;
 			}
-			
 			if(intSuitValue[0] == intSuitValue[1] && intSuitValue[0] == intSuitValue[2] && intSuitValue[0] == intSuitValue[3] && intSuitValue[0] == intSuitValue[4]){
 				blnFlush = true;
 			}
-			
 			if((intCardValue[0] == 1 && intCardValue[1] == 10 && intCardValue[2] == 11 && intCardValue[3] == 12 && intCardValue[4] == 13)){
 				blnRoyalStr = true;
 			}
-			
 			if(blnStraight == true && blnFlush == true){
 				blnStrFlush = true;
 			}
-			
 			if(blnFlush == true && blnRoyalStr == true && intSuitValue[0] == 4){
 				blnRoyalFlush = true;
 			}
-			
+			//determines payout
 			if(blnRoyalFlush == true){
 				intMult = 800;
 				strWin = "Royal Flush!";
@@ -601,7 +633,7 @@ public class CPTrio{
 			
 			intWin = intBet * intMult;
 			strPayout = strPayout + intWin;
-			
+			//draw win/lose screen
 			BufferedImage imgWin = con.loadImage("assets/win.png");
 			BufferedImage imgBankrupt = con.loadImage("assets/noMoney.png");
 			BufferedImage imgReturn = con.loadImage("assets/Return.png");
@@ -626,6 +658,7 @@ public class CPTrio{
 				con.setDrawFont(txtFont);
 				con.drawString(strPayout, intxPayoutDraw, 359);
 				con.repaint();
+				//play again system, restarts loop if play again, return to menu if not
 				while(true){
 					char charTyped = con.getChar();
 					if(charTyped == 'p' || charTyped == 'P'){
@@ -637,6 +670,7 @@ public class CPTrio{
 					}
 				}
 			}else{
+				//if out of money, immediately send user to main menu
 				con.drawImage(imgBankrupt, 345, 205);
 				con.setDrawColor(Color.WHITE);
 				con.setDrawFont(titleFont);
@@ -648,24 +682,9 @@ public class CPTrio{
 		}
 		return intMoney;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public static int[][] loadDeck(){
+		//Create the deck, return it to game
 		int intCards[][];
 		int intCard;
 		int intSuit;
@@ -685,12 +704,11 @@ public class CPTrio{
 				intSuit++;
 			}
 		}
-		
 		return intCards;
 	}
 	
 	public static int[][] sort(int intDeck[][]) {
-		
+		//Sort the deck, return it to game
 		int intTemp[] = new int[3];
 		int intCount;
 		int intCount2;
@@ -711,7 +729,7 @@ public class CPTrio{
 	}
 	
 	public static int[][] sortHand(int intDeck[][]) {
-		
+		//Sort the hand, return it to game
 		int intTemp[] = new int[2];
 		int intCount;
 		int intCount2;
@@ -732,7 +750,7 @@ public class CPTrio{
 	}
 	
 	public static String[][] sortLeaderboard(String strLb[][], int intRows) {
-		
+		//Sort the leaderboard, return to leaderboard
 		String strTemp [] = new String[2];
 		int intCount;
 		int intCount2;
@@ -752,32 +770,30 @@ public class CPTrio{
 		return strLb;
 	}
 	
-	public static void animCard(int intHand[][], int intCount, Console con, boolean blnUp, int intMoney, String strBetDraw, int intxBet){
+	public static void animCard(int intHand[][], int intCount, Console con, int intMoney, String strBetDraw, int intxBet){
+		//Card animation
 		System.out.println("animating");
 		BufferedImage imgBack = con.loadImage("assets/cardback.png");
 		BufferedImage imgGame = con.loadImage("assets/GameMenu.png");
 		int intxCard = 165 + 202*intCount;
 		
-		if(blnUp == true){
-			int intyCard = 915;
-			while(intyCard != 355){
-				con.drawImage(imgGame, 0, 0);
-				con.drawString("Money: $" + intMoney, 53, 35);
-				con.drawString(strBetDraw, intxBet, 35);
-				for(int intCount2 = 0; intCount2 < intCount; intCount2++){
-					System.out.println(intCount2);
-					BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount2][0]) + Integer.toString(intHand[intCount2][1]) + ".png");
-					con.drawImage(imgFront, 165 + 202*intCount2, 365);
-				}
-				con.drawImage(imgBack, intxCard, intyCard);
-				intyCard -= 10;
-				System.out.println(intyCard);
-				con.repaint();
-				con.sleep(5);
+		int intyCard = 915;
+		while(intyCard != 355){
+			con.drawImage(imgGame, 0, 0);
+			con.drawString("Money: $" + intMoney, 53, 35);
+			con.drawString(strBetDraw, intxBet, 35);
+			for(int intCount2 = 0; intCount2 < intCount; intCount2++){
+				//keep the cards that are previously drawn on the screen
+				System.out.println(intCount2);
+				BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount2][0]) + Integer.toString(intHand[intCount2][1]) + ".png");
+				con.drawImage(imgFront, 165 + 202*intCount2, 365);
 			}
-			intyCard += 10;
+			con.drawImage(imgBack, intxCard, intyCard);
+			intyCard -= 10;
+			System.out.println(intyCard);
+			con.repaint();
+			con.sleep(5);
 		}
+		intyCard += 10;
 	}
 }
-
-
