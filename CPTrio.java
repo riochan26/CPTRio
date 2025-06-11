@@ -485,9 +485,13 @@ public class CPTrio{
 			if(blnCard5Swap == true){
 				con.drawImage(imgBack, 973, 365);
 			}
-			con.setDrawFont(titleFont);
-			con.drawString("Swapping...", 503, 199);
-			con.repaint();
+			//if cards are being swapped, add swapping text and add tension
+			if(blnCard1Swap == true || blnCard2Swap == true || blnCard3Swap == true || blnCard4Swap == true || blnCard5Swap == true){
+				con.setDrawFont(titleFont);
+				con.drawString("Swapping...", 503, 199);
+				con.repaint();
+				con.sleep(5000);
+			}
 			//swaps the face down cards
 			if(blnCard1Swap == true){
 				intRow++;
@@ -520,8 +524,7 @@ public class CPTrio{
 				intHand[4][1] = intCards[intRow][1];
 			}
 			
-			//pause to add tension, redraw screen to remove instructions
-			con.sleep(5000);
+			//redraw screen to remove instructions
 			con.clear();
 			con.setDrawFont(txtFont);
 			con.drawImage(imgGame, 0, 0);
