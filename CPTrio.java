@@ -252,7 +252,7 @@ public class CPTrio{
 		int intMult;
 		int intWin;
 		strSwappedCards = "";
-		String strPlayAgain = "y";
+		String strPlayAgain = "p";
 		boolean blnBet;
 		int intxBet = 0;
 		con.clear();
@@ -261,7 +261,7 @@ public class CPTrio{
 		String strBetDraw = "";
 		int textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
 		
-		while(strPlayAgain.equalsIgnoreCase("y")){
+		while(strPlayAgain.equalsIgnoreCase("p")){
 			blnBet = false;
 			
 			intCards = loadDeck();
@@ -269,8 +269,12 @@ public class CPTrio{
 			intBet = 0;
 			String strBet = "";
 			
+			Font titleFont = con.loadFont("assets/Raleway-SemiBold.ttf", 50);
+			Font txtFont = con.loadFont("assets/Raleway-SemiBold.ttf", 30);
+			BufferedImage imgBack = con.loadImage("assets/cardback.png");
+			
 			while(blnBet == false){
-				
+				con.setDrawFont(txtFont);
 				strBetDraw = "Bet: $" + strBet;
 				textWidth = con.getTextFontMetrics().stringWidth(strBetDraw);
 				intxBet = 1280 - textWidth - 100;
@@ -339,11 +343,12 @@ public class CPTrio{
 			boolean blnCard3Swap = false;
 			boolean blnCard4Swap = false;
 			boolean blnCard5Swap = false;
+			con.setDrawFont(txtFont);
+			con.drawString("Click on the cards you wish to swap", 387, 156);
+			con.drawString("You keep the face-up cards", 454, 184);
+			con.drawString("Press [Enter] to confirm selection", 406, 212);
 			
-			con.drawString("Money: $" + intMoney, 53, 35);
-			con.drawString(strBetDraw, intxBet, 35);
 			while(blnSwapPhase == true){
-				BufferedImage imgBack = con.loadImage("assets/cardback.png");
 				int intxMouse = con.currentMouseX();
 				int intyMouse = con.currentMouseY();
 				int intClicked = con.currentMouseButton();
@@ -418,39 +423,84 @@ public class CPTrio{
 				con.repaint();
 			}
 			
+			con.drawImage(imgGame, 0, 0);
+			con.drawString("Money: $" + intMoney, 53, 35);
+			con.drawString(strBetDraw, intxBet, 35);
+			
+			for(intCount = 0; intCount < 5; intCount++){
+					System.out.println(intCount);
+					BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount][0]) + Integer.toString(intHand[intCount][1]) + ".png");
+					con.drawImage(imgFront, 165 + 202*intCount, 365);
+					
+				}
+			
+			if(blnCard1Swap == true){
+				con.drawImage(imgBack, 165, 365);
+			}
+			if(blnCard2Swap == true){
+				con.drawImage(imgBack, 367, 365);
+			}
+			if(blnCard3Swap == true){
+				con.drawImage(imgBack, 569, 365);
+			}
+			if(blnCard4Swap == true){
+				con.drawImage(imgBack, 771, 365);
+			}
+			if(blnCard5Swap == true){
+				con.drawImage(imgBack, 973, 365);
+			}
+			con.setDrawFont(titleFont);
+			con.drawString("Swapping...", 503, 199);
+			con.repaint();
+			
 			if(blnCard1Swap == true){
 				intRow++;
+				System.out.println("swapping 1st");
 				intHand[0][0] = intCards[intRow][0];
 				intHand[0][1] = intCards[intRow][1];
 			}
 			if(blnCard2Swap == true){
 				intRow++;
+				System.out.println("swapping 2nd");
 				intHand[1][0] = intCards[intRow][0];
 				intHand[1][1] = intCards[intRow][1];
 			}
 			if(blnCard3Swap == true){
 				intRow++;
+				System.out.println("swapping 3rd");
 				intHand[2][0] = intCards[intRow][0];
 				intHand[2][1] = intCards[intRow][1];
 			}
 			if(blnCard4Swap == true){
 				intRow++;
+				System.out.println("swapping 4th");
 				intHand[3][0] = intCards[intRow][0];
 				intHand[3][1] = intCards[intRow][1];
 			}
 			if(blnCard5Swap == true){
 				intRow++;
+				System.out.println("swapping 5th");
 				intHand[4][0] = intCards[intRow][0];
 				intHand[4][1] = intCards[intRow][1];
 			}
 			
-			con.sleep(1000);
+			
+			con.sleep(5000);
+			con.clear();
+			con.setDrawFont(txtFont);
+			con.drawImage(imgGame, 0, 0);
+			con.drawString("Money: $" + intMoney, 53, 35);
+			con.drawString(strBetDraw, intxBet, 35);
 			
 			for(intCount = 0; intCount < 5; intCount++){
+				System.out.println("redrawing");
+				System.out.println(intHand[intCount][0] + intHand[intCount][1]);
 				BufferedImage imgFront = con.loadImage("assets/" + Integer.toString(intHand[intCount][0]) + Integer.toString(intHand[intCount][1]) + ".png");
 				con.drawImage(imgFront, 165 + 202*intCount, 365);
-				
+				con.repaint();
 			}
+			
+			con.sleep(2000);
 			intHand = sortHand(intHand);
 			
 			int intCardValue[];
@@ -470,6 +520,8 @@ public class CPTrio{
 			boolean blnRoyalStr = false;
 			boolean blnStrFlush = false;
 			boolean blnRoyalFlush = false;
+			String strWin = "";
+			String strPayout = "You Win: $";
 			
 			for(intCount = 0; intCount < 5; intCount++){
 				intCardValue[intCount] = intHand[intCount][0];
@@ -517,42 +569,81 @@ public class CPTrio{
 			
 			if(blnRoyalFlush == true){
 				intMult = 800;
+				strWin = "Royal Flush!";
 			}else if(blnStrFlush == true){
 				intMult = 50;
+				strWin = "Straight Flush!";
 			}else if(blnFourKind == true){
 				intMult = 25;
+				strWin = "Four of a Kind!";
 			}else if(blnFullHouse == true){
 				intMult = 9;
+				strWin = "Full House!";
 			}else if(blnFlush == true){
 				intMult = 6;
+				strWin = "Flush!";
 			}else if(blnStraight == true){
 				intMult = 4;
+				strWin = "Straight!";
 			}else if(blnThreeKind == true){
 				intMult = 3;
+				strWin = "Three of a Kind!";
 			}else if(intPairs == 2){
 				intMult = 2;
+				strWin = "Two Pairs!";
 			}else if(blnJacksUp == true){
 				intMult = 1;
+				strWin = "Jacks and Up!";
 			}else{
 				intMult = 0;
+				strWin = "You Lost...";
 			}
 			
 			intWin = intBet * intMult;
-			if (intMult != 0){
-				con.println("You won $" + intWin);
-			}else{
-				con.println("You lost $" + intBet);
-			}
+			strPayout = strPayout + intWin;
+			
+			BufferedImage imgWin = con.loadImage("assets/win.png");
+			BufferedImage imgBankrupt = con.loadImage("assets/noMoney.png");
+			BufferedImage imgReturn = con.loadImage("assets/Return.png");
+			con.setDrawFont(titleFont);
+			int winWidth = con.getDrawFontMetrics().stringWidth(strWin);
+			int intxWinDraw = 640 - winWidth/2;
+			
+			con.setDrawFont(txtFont);
+			int payoutWidth = con.getDrawFontMetrics().stringWidth(strPayout);
+			int intxPayoutDraw = (1280 - payoutWidth)/2;
+			
+			con.setDrawColor(new Color(0, 0, 0, 128));
+			con.fillRect(0, 0, 1280, 720);
+			
 			intMoney += intWin;
 			
 			if(intMoney != 0){
-				con.println("you now have $" + intMoney);
-				con.println("do you want to play again? y/n");
-				strPlayAgain = con.readLine();
+				con.drawImage(imgWin, 345, 205);
+				con.setDrawColor(Color.WHITE);
+				con.setDrawFont(titleFont);
+				con.drawString(strWin, intxWinDraw, 257);
+				con.setDrawFont(txtFont);
+				con.drawString(strPayout, intxPayoutDraw, 359);
+				con.repaint();
+				while(true){
+					char charTyped = con.getChar();
+					if(charTyped == 'p' || charTyped == 'P'){
+						break;
+					}else if(charTyped == 'm' || charTyped == 'M'){
+						strPlayAgain = "m";
+						con.drawImage(imgReturn, 345, 205);
+						break;
+					}
+				}
 			}else{
-				strPlayAgain = "n";
-				con.println("Press any button to return to menu");
-				con.getChar();
+				con.drawImage(imgBankrupt, 345, 205);
+				con.setDrawColor(Color.WHITE);
+				con.setDrawFont(titleFont);
+				con.drawString(strWin, intxWinDraw, 257);
+				con.repaint();
+				strPlayAgain = "m";
+				con.sleep(5000);
 			}
 		}
 		return intMoney;
