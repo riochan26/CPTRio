@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------------
-// Name:         RioCPT
-// Purpose:      Create a Jacks or Better Video Poker Game
 // Author:       Chan R.
-// Created:      May 28, 2025
+// Name:         RioCPT
+// Last Updated: June 12, 2025
+// Version:      v0.9.8.1
 //-------------------------------------------------------------------------
 import arc.*;
 import java.awt.Color;
